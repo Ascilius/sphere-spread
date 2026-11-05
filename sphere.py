@@ -5,7 +5,7 @@ DEBUG = True
 # ROUND = 3 # number of figures after the decimal to round to
 
 """
-n_points = 10
+n = 10
 dt = 0.001 # seconds? idk
 MAX_TIME = 20
 output_filename = "output.csv"
@@ -34,8 +34,14 @@ class Point:
 		# theta, vth, ath: [0, pi)
 		# phi, vp, ap: [0, 2 * pi)
 
-	def get_coordinates(self):
+	def get_spherical(self):
 		return (self.r, self.t, self.p)
+
+	def get_cartesian(self):
+		r = self.r
+		t = self.t
+		p = self.p
+		return to_cartesian(r, t, p)
 
 	def __str__(self):
 		t_deg = degrees(self.t)
@@ -62,53 +68,32 @@ class Sphere:
 				p = self.points[i]
 				print(f"point {i}: {p}")
 
-	"""
 	# force accumulation
 	def accumulate(self):
-		for i in range(self.n_points):
-			point_i = self.points[i]
-			s1 = to_cartesian(point_i.get_position())
-			
-			for j in range(i + 1, self.n_points):
-				point_j = self.points[j]
-				s2 = to_cartesian(point_j.get_position())
+		for i in range(self.n - 1):
+			p_i = self.points[i]
+			c_i = p_i.get_cartesian()
+			for j in range(i + 1 , self.n):
+				p_j = self.points[j]
+				c_j = p_j.get_cartesian()
 				
-				# angle separation
-				x1, y1, z1 = s1
-				x2, y2, z2 = s2
+				F = force_between(c_i, c_j)
 
-				theta = vector_angle([x1,y1,z1],[x2,y2,z2])
-				deg = theta * 180 / pi
+				if DEBUG:
+					print(f"DEBUG: {i} <-> {j}: {F}")
 
-				# force/acceleration
-				a = 1 / pow(theta, 2) # mass is 1 i guess
-				if DEBUG: # 					 v radians			 v degrees			v accel. factor
-					print(f"DEBUG: {i} <-> {j}: {round(theta, 3)} / {round(deg, 1)} -> {round(a, 1)}")
+				x_i, y_i, z_i = c_i
+				x_j, y_j, z_j = c_j
 				
-				# direction calculations
-				v1 = [x1,y1,z1]
-				v2 = [x2,y2,z2]
-				v3 = sub(v1, v2)
-				u3 = normalize(v3)
-				neg_u3 = negate_vector(v3) # still in cartesian
+				dx = x_j - x_i
+				dy = y_j - y_i
+				dz = z_j - z_i
 
-				# accumulation
-				sph_theta = atan(u3[1] / u3[0])
-				if u4[0] < 0:
-					sph_theta += 180
-				sph_u4 = [1.0, sph_theta, acos(u4[2] / 1)] # converting to spherical (TOFIX)
-				sph_theta = atan(neg_u5[1] / neg_u5[0])
-				if neg_u5[0] < 0:
-					sph_theta += 180
-				sph_neg_u5 = [1.0, sph_theta, acos(neg_u5[2] / 1)]
-				
-				point_i.ath = sph_u4[1]
-				point_i.ap = sph_u4[2]
-				point_j.ath = sph_neg_u5[1]
-				point_j.ap = sph_neg_u5[2]
+				u_ij = normalize([dx, dy, dz])
 
 	def step(self, dt):
 		self.accumulate()
+		"""
 		self.n += 1
 		
 		for point in self.points:
@@ -118,7 +103,7 @@ class Sphere:
 			# v -> s
 			point.theta += point.vth * dt
 			point.phi += point.vp * dt
-	"""
+		"""
 
 if __name__ == "__main__":
 	Sphere()

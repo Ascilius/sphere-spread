@@ -11,7 +11,7 @@ COLORS = [color.red, color.orange, color.yellow, color.green, color.blue, color.
 
 # N = 2
 SIZE_SCALE = 0.1
-# TIME_SCALE = 0.01
+TIME_SCALE = 1.0
 
 class SphereWrapper:
 	def __init__(self, n = 3):
@@ -27,8 +27,7 @@ class SphereWrapper:
 		self.points = []
 		for i in range(n):
 			pnt = self.sphere.points[i]
-			r, t, p = pnt.get_coordinates()
-			pos = to_cartesian(r, t, p)
+			pos = pnt.get_cartesian()
 			pnt_sph = Entity(
 				model = 'sphere',
 				color = choice(COLORS),
@@ -62,11 +61,22 @@ if __name__ == "__main__":
 	spw = SphereWrapper()
 	if DEBUG:
 		draw_axis()
-	
-	"""
-	def update():
-		spw.step(time.dt * TIME_SCALE)
-	"""
 
+	pause = True
+
+	def input(key):
+		global pause
+		if key == "right arrow":
+			spw.step(1 / 144 * TIME_SCALE)
+		if key == "space":
+			pause = not pause
+		if key == "escape":
+			application.quit()
+
+	def update():
+		global pause
+		if not pause:
+			spw.step(time.dt * TIME_SCALE)
+	
 	EditorCamera()
 	app.run()

@@ -32,6 +32,7 @@ def sub(v1, v2)
 	y2 = v2[1]
 	z2 = v2[2]
 	return [x2 - x1, y2 - y1, z2 - z1]
+"""
 
 # convert to unit vector
 def normalize(v):
@@ -44,7 +45,6 @@ def normalize(v):
 # negate vector
 def negate_vector(v):
 	return [v[0] * -1, v[1] * -1, v[2] * -1]
-"""
 
 # converts spherical coordinates to cartesian coordinates
 # r: radius of the sphere
@@ -54,14 +54,14 @@ def to_cartesian(r, t, p):
 	x = r * cos(t) * cos(p)
 	y = r * sin(t)
 	z = r * cos(t) * sin(p)
-	if DEBUG:
-		print(f"DEBUG: x = {x}, y = {y}, z = {z}")
+	# if DEBUG:
+	# w	print(f"DEBUG: x = {x}, y = {y}, z = {z}")
 	return x, y, z
 
 # calculates the angle between two spherical coordinates
-def angle_between(r, t1, p1, t2, p2):
-	x1, y1, z1 = to_cartesian(r, t1, p1)
-	x2, y2, z2 = to_cartesian(r, t2, p2)
+def angle_between(r, c_i, c_j):
+	x1, y1, z1 = c_i
+	x2, y2, z2 = c_j
 	
 	dx = x2 - x1
 	dy = y2 - y1
@@ -70,6 +70,11 @@ def angle_between(r, t1, p1, t2, p2):
 
 	ha = asin(d / 2 / r)
 	return ha * 2
+
+# calculates the force between two cartesian coordinates
+def force_between(c_i, c_j):
+	a = angle_between(1, c_i, c_j)
+	return 1 / (a * a)
 
 # ----------------------------------------------------------------
 # tests

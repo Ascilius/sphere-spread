@@ -1,5 +1,10 @@
+### TODO:
+ - fix physics
+
+### Inspiration
 https://www.youtube.com/watch?v=XZy3rXr2yeM&t=149s
 
+### Sources
 https://www.w3schools.com/python/
 https://en.wikipedia.org/wiki/Spherical_coordinate_system
 https://docs.python.org/3/library/math.html

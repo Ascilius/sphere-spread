@@ -9,7 +9,7 @@ DEBUG = True
 
 COLORS = [color.red, color.orange, color.yellow, color.green, color.blue, color.violet]
 
-# N = 2
+N = 6
 SIZE_SCALE = 0.1
 TIME_SCALE = 1.0
 
@@ -17,12 +17,13 @@ class SphereWrapper:
 	def __init__(self, n = 3):
 		self.sphere = Sphere(n)
 
-		surface_sphere = Entity(
-			model = 'sphere',
-			color = color.white,
-			scale = 2,
-			position = (0, 0, 0)
-		)
+		if DEBUG:
+			surface_sphere = Entity(
+				model = 'sphere',
+				color = color.white,
+				scale = 2,
+				position = (0, 0, 0)
+			)
 
 		self.points = []
 		for i in range(n):
@@ -39,14 +40,12 @@ class SphereWrapper:
 	def step(self, dt):
 		self.sphere.step(dt)
 		
-		"""
 		# updating positions
 		for i in range(self.sphere.n):
 			pnt = self.sphere.points[i]
-			pos = to_cartesian(pnt.get_position())
+			pos = pnt.get_cartesian()
 			pnt_sph = self.points[i]
 			pnt_sph.position = pos
-		"""
 
 def draw_axis():
 	pip = Pipe(path = ((0,0,0),(2,0,0)), thicknesses = ((.01,.01),))
@@ -58,7 +57,7 @@ def draw_axis():
 
 if __name__ == "__main__":
 	app = Ursina()
-	spw = SphereWrapper()
+	spw = SphereWrapper(N)
 	if DEBUG:
 		draw_axis()
 

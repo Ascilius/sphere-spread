@@ -1,5 +1,9 @@
-https://www.youtube.com/watch?v=XZy3rXr2yeM&t=149s
+### TODO
+ - add/remove particles
+ - better ui idk
 
+### Sources
+https://www.youtube.com/watch?v=XZy3rXr2yeM&t=149s
 https://www.w3schools.com/python/
 https://en.wikipedia.org/wiki/Spherical_coordinate_system
 https://docs.python.org/3/library/math.html

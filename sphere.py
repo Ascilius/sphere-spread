@@ -1,54 +1,59 @@
 from random import random
 from sphere_math import *
 
-DEBUG = True
-# ROUND = 3 # number of figures after the decimal to round to
-
-"""
-n = 10
-dt = 0.001 # seconds? idk
-MAX_TIME = 20
-output_filename = "output.csv"
-"""
+DEBUG = False
 
 class Point:
 	def __init__(self):
-		self.r = 1.0 # radial distance from origin
-		self.t = random() * pi - pi / 2 # polar angle [-pi/2, pi/2)
-		self.p = random() * 2 * pi # azimuthal angle, [0, 2pi)
-		
-		"""
-		# velocity
-		self.vr = 0.0
-		self.vth = 0.0
-		self.vp = 0.0
+		r = 1.0 # radial distance from origin
+		t = random() * pi - pi / 2 # polar angle [-pi/2, pi/2)
+		p = random() * 2 * pi # azimuthal angle, [0, 2pi)
 
-		# acceleration
-		self.ar = 0.0
-		self.ath = 0.0
-		self.ap = 0.0
-		"""
+		# if DEBUG:
+		# 	print(f"DEBUG: r = {r:.2f}, t = {degrees(t):.2f}, p = {degrees(p):.2f}")
 
-		# rho is always 1 (on the surface of a unit sphere)
-		# vr, ar are always 0
-		# theta, vth, ath: [0, pi)
-		# phi, vp, ap: [0, 2 * pi)
+		self.sx, self.sy, self.sz = to_cartesian(r, t, p)
+
+		self.vx = 0.0
+		self.vy = 0.0
+		self.vz = 0.0
+
+		self.ax = 0.0
+		self.ay = 0.0
+		self.az = 0.0
 
 	def get_spherical(self):
-		return (self.r, self.t, self.p)
+		r, t, p = to_spherical(self.sx, self.sy, self.sz)
+		return r, t, p
 
 	def get_cartesian(self):
-		r = self.r
-		t = self.t
-		p = self.p
-		return to_cartesian(r, t, p)
+		return self.sx, self.sy, self.sz
+
+	def accumulate(self, ax, ay, az):
+		self.ax += ax
+		self.ay += ay
+		self.az += az
+
+	def step(self, dt):
+		self.vx += self.ax * dt
+		self.vy += self.ay * dt
+		self.vz += self.az * dt
+
+		x = self.sx + self.vx * dt
+		y = self.sy + self.vy * dt
+		z = self.sz + self.vz * dt
+
+		self.ax = 0
+		self.ay = 0
+		self.az = 0
+
+		self.sx, self.sy, self.sz = normalize(x, y, z)
 
 	def __str__(self):
-		t_deg = degrees(self.t)
-		p_deg = degrees(self.p)
-		s = f"r: {self.r:.2f}; t: {t_deg:.2f}; p: {p_deg:.2f}"
-		# string += f"\nvr: {self.vr}; vth: {round(self.vth, ROUND)}; vp: {round(self.vp, ROUND)}"
-		# string += f"\nar: {self.ar}; ath: {round(self.ath, ROUND)}; vp: {round(self.ap, ROUND)}"
+		r, t, p = self.get_spherical()
+		t_deg = degrees(t)
+		p_deg = degrees(p)
+		s = f"r: {r:.2f}; t: {t_deg:.2f}; p: {p_deg:.2f}"
 		return s
 
 class Sphere:
@@ -89,21 +94,18 @@ class Sphere:
 				dy = y_j - y_i
 				dz = z_j - z_i
 
-				u_ij = normalize([dx, dy, dz])
+				u_ij = normalize(dx, dy, dz)
+				ax = u_ij[0] * F
+				ay = u_ij[1] * F
+				az = u_ij[2] * F
+
+				p_j.accumulate(ax, ay, az)
+				p_i.accumulate(-ax, -ay, -az)
 
 	def step(self, dt):
 		self.accumulate()
-		"""
-		self.n += 1
-		
-		for point in self.points:
-			# a -> v
-			point.vth += point.ath * dt
-			point.vp += point.ap * dt
-			# v -> s
-			point.theta += point.vth * dt
-			point.phi += point.vp * dt
-		"""
+		for p in self.points:
+			p.step(dt)
 
 if __name__ == "__main__":
 	Sphere()

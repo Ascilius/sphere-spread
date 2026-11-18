@@ -2,49 +2,26 @@ from math import *
 
 DEBUG = True
 
-"""
-# angle between vectors
-def vector_angle(v1, v2):
-	x1 = v1[0]
-	y1 = v1[1]
-	z1 = v1[2]
-	x2 = v2[0]
-	y2 = v2[1]
-	z2 = v2[2]
-	return acos(x1 * x2 + y1 * y2 + z1 * z2)
-
-# vector cross product
-def cross_product(v1, v2):
-	x1 = v1[0]
-	y1 = v1[1]
-	z1 = v1[2]
-	x2 = v2[0]
-	y2 = v2[1]
-	z2 = v2[2]
-	return [y1 * z2 - z1 * y2, z1 * x2 - x1 * z2, x1 * y2 - y1 * x2]
-
-# vector difference; subtracts v1 from v2
-def sub(v1, v2)
-	x1 = v1[0]
-	y1 = v1[1]
-	z1 = v1[2]
-	x2 = v2[0]
-	y2 = v2[1]
-	z2 = v2[2]
-	return [x2 - x1, y2 - y1, z2 - z1]
-"""
-
 # convert to unit vector
-def normalize(v):
-	x = v[0]
-	y = v[1]
-	z = v[2]
+def normalize(x, y, z):
 	m = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2))
-	return [x / m, y / m, z / m]
+	return x / m, y / m, z / m
 
 # negate vector
 def negate_vector(v):
 	return [v[0] * -1, v[1] * -1, v[2] * -1]
+
+# converts cartesian coordinates to spherical coordinates
+def to_spherical(x, y, z):
+	r = sqrt(x * x + y * y + z * z)
+	h = sqrt(x * x + z * z)
+	t = acos(h / r)
+	if y < 0:
+		t *= -1
+	p = atan2(z, x)
+	if p < 0:
+		p += 2 * pi
+	return r, t, p
 
 # converts spherical coordinates to cartesian coordinates
 # r: radius of the sphere
@@ -58,7 +35,7 @@ def to_cartesian(r, t, p):
 	# w	print(f"DEBUG: x = {x}, y = {y}, z = {z}")
 	return x, y, z
 
-# calculates the angle between two spherical coordinates
+# calculates the angle between two cartesian coordinates
 def angle_between(r, c_i, c_j):
 	x1, y1, z1 = c_i
 	x2, y2, z2 = c_j
@@ -79,6 +56,11 @@ def force_between(c_i, c_j):
 # ----------------------------------------------------------------
 # tests
 
+def test_spherical(x, y, z):
+	print(f"\nx = {x:.2f}, y = {y:.2f}, z = {z:.2f}")
+	r, t, p = to_spherical(x, y, z)
+	print(f"r = {r:.2f}, t = {t:.2f}, p = {p:.2f}")
+
 def test_cartesian(r, t, p):
 	print(f"\nr = {r:.2f}, t = {t:.2f}, p = {p:.2f}")
 	x, y, z = to_cartesian(r, t, p)
@@ -86,11 +68,53 @@ def test_cartesian(r, t, p):
 
 def test_a_between(r, t1, p1, t2, p2):
 	print(f"\nr = {r:.2f}, t1 = {t1:.2f}, p1 = {p1:.2f}, t2 = {t2:.2f}, p2 = {p2:.2f}")
-	t = angle_between(r, t1, p1, t2, p2)
+	c1 = to_cartesian(r, t1, p1)
+	c2 = to_cartesian(r, t2, p2)
+	t = angle_between(1, c1, c2)
 	print(f"t = {t:.2f}")
 
 if __name__ == "__main__":
 	from random import random
+
+	print("\nto_spherical:")
+
+	x = 1.0
+	y = 0.0
+	z = 0.0
+	test_spherical(x, y, z) # 1, 0, 0
+
+	x = 0.0
+	y = 1.0
+	z = 0.0
+	test_spherical(x, y, z) # 1, 1.57, 0
+
+	x = 0.0
+	y = 0.0
+	z = 1.0
+	test_spherical(x, y, z) # 1, 0, 1.57
+
+	x = -1.0
+	y = 0.0
+	z = 0.0
+	test_spherical(x, y, z) # 1, 0, 3.14
+
+	x = 0.0
+	y = -1.0
+	z = 0.0
+	test_spherical(x, y, z) # 1, -1.57, 0
+
+	x = 0.0
+	y = 0.0
+	z = -1.0
+	test_spherical(x, y, z) # 1, 0, 4.71
+
+	while True:
+		input()
+		x = random() - 0.5
+		y = random() - 0.5
+		z = random() - 0.5
+		x, y, z = normalize(x, y, z)
+		test_spherical(x, y, z)
 
 	print("\nto_cartesian:")
 

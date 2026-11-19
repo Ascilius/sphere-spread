@@ -5,7 +5,7 @@ from ursina import *
 from sphere import *
 from sphere_math import *
 
-DEBUG = True
+DEBUG = False
 
 COLORS = [color.red, color.orange, color.yellow, color.green, color.blue, color.violet]
 
@@ -47,6 +47,26 @@ class SphereWrapper:
 			pnt_sph = self.points[i]
 			pnt_sph.position = pos
 
+	def add_point(self):
+		pnt = self.sphere.add_point()
+		pos = pnt.get_cartesian()
+		new_point = Entity(
+			model = 'sphere',
+			color = choice(COLORS),
+			scale = SIZE_SCALE,
+			position = pos
+		)
+		self.points.append(new_point)
+
+	def del_point(self):
+		n = self.sphere.n
+		if n == 0:
+			return
+		i = int(random() * n)
+		p = self.points.pop(i)
+		destroy(p)
+		self.sphere.del_point(i)
+
 def draw_axis():
 	pip = Pipe(path = ((0,0,0),(2,0,0)), thicknesses = ((.01,.01),))
 	Entity(model = pip, color = color.red)
@@ -65,12 +85,20 @@ if __name__ == "__main__":
 
 	def input(key):
 		global pause
+
+		# if DEBUG:
+		# 	print("DEBUG: key:", key)
+
 		if key == "right arrow":
 			spw.step(1 / 144 * TIME_SCALE)
-		if key == "space":
+		elif key == "space":
 			pause = not pause
-		if key == "escape":
+		elif key == "escape":
 			application.quit()
+		elif key == "=":
+			spw.add_point()
+		elif key == "-":
+			spw.del_point()
 
 	def update():
 		global pause

@@ -1,6 +1,7 @@
 ### TODO
- - add/remove particles
- - better ui idk
+ - replace force calculations
+    - non-normalization method
+ - change color to correlate with speed
 
 ### Sources
 https://www.youtube.com/watch?v=XZy3rXr2yeM&t=149s

@@ -107,5 +107,18 @@ class Sphere:
 		for p in self.points:
 			p.step(dt)
 
+	def add_point(self):
+		new_point = Point()
+		self.points.append(new_point)
+		self.n += 1
+		return new_point
+
+	def del_point(self, i):
+		if i < 0 or self.n <= i:
+			return
+		p = self.points.pop(i)
+		del(p)
+		self.n -= 1
+
 if __name__ == "__main__":
 	Sphere()

@@ -1,18 +1,21 @@
+### Controls
+ - ```esc```: quit
+ - ```space```: pause/unpause
+ - ```right arrow```: single step
+ - ```mouse```:
+   - right click and drag to change view angle
+   - scroll to zoom in/out
+ - ```=```: add point
+ - ```-```: remove point
+ - ```F3```: show axis, surface sphere
+
+
 ### TODO
  - replace force calculations
     - non-normalization method
  - change color to correlate with speed
+ - fix ```angle_between``` math domain error
 
 ### Sources
-https://www.youtube.com/watch?v=XZy3rXr2yeM&t=149s
-https://www.w3schools.com/python/
-https://en.wikipedia.org/wiki/Spherical_coordinate_system
-https://docs.python.org/3/library/math.html
-https://pynative.com/python-get-random-float-numbers/
-https://en.neurochispas.com/trigonometry/spherical-to-cartesian-coordinates-formulas-and-examples/
-https://www.cuemath.com/trigonometry/arccosine/
-https://en.wikipedia.org/wiki/Cross_product
-https://www.geeksforgeeks.org/python-return-statement/
-https://www.cuemath.com/geometry/angle-between-vectors/
-https://physicsgoeasy.com/cartesian-to-spherical/
-https://en.wikipedia.org/wiki/Standard_deviation
+ - https://www.youtube.com/watch?v=XZy3rXr2yeM&t=149s
+ - https://en.wikipedia.org/wiki/Haversine_formula

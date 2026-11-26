@@ -29,6 +29,9 @@ class Point:
 	def get_cartesian(self):
 		return self.sx, self.sy, self.sz
 
+	def get_speed(self):
+		return sqrt(pow(self.vx, 2) + pow(self.vy, 2) + pow(self.vz, 2))
+
 	def accumulate(self, ax, ay, az):
 		self.ax += ax
 		self.ay += ay
